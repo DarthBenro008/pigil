@@ -18,3 +18,8 @@ func ListCommand(service DatabaseService) {
 	}
 	PrintInformation(data)
 }
+
+func GoogleAuth(service DatabaseService) {
+	config := OAuthGoogleConfig()
+	GoogleLogin(config)
+}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/joho/godotenv"
 	bolt "go.etcd.io/bbolt"
 	"io"
 	"log"
@@ -15,6 +16,11 @@ func main() {
 	db, err := bolt.Open(databaseName, 0666, nil)
 	if err != nil {
 		log.Fatal(err.Error())
+	}
+
+	err = godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
 	}
 	boltDatabase := NewBoldDbService(db)
 	dbService := NewDatabaseService(boltDatabase)
@@ -32,6 +38,8 @@ func cliHandler(args []string, service DatabaseService) {
 	switch args[2] {
 	case cliDb:
 		ListCommand(service)
+	case cliAuth:
+		GoogleAuth(service)
 	}
 }
 
