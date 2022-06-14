@@ -46,7 +46,7 @@ func (b boltDatabase) List() (*[]CommandInformation, error) {
 			return err
 		}
 		c := b.Cursor()
-		for k, v := c.First(); k != nil; k, v = c.Next() {
+		for k, v := c.Last(); k != nil; k, v = c.Prev() {
 			var tci CommandInformation
 			err := json.Unmarshal(v, &tci)
 			if err != nil {

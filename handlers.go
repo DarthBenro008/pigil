@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 )
 
@@ -17,5 +16,5 @@ func ListCommand(service DatabaseService) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	fmt.Println(data)
+	PrintInformation(data)
 }
