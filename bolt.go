@@ -1,8 +1,9 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	bolt "go.etcd.io/bbolt"
+	"strconv"
 )
 
 type BoltDatabase interface {
@@ -16,9 +17,13 @@ type boltDatabase struct {
 }
 
 func (b boltDatabase) Insert(information CommandInformation) error {
+	buf, err := json.Marshal(information)
+	if err != nil {
+		return err
+	}
 	return b.BoltDb.Update(func(tx *bolt.Tx) error {
 		b, err := tx.CreateBucketIfNotExists(Stba(bucket))
-		err = b.Put(Stba("asdf"), Stba("asdf"))
+		err = b.Put(Stba(strconv.Itoa(int(information.ExecutionTime))), buf)
 		return err
 	})
 }
@@ -35,14 +40,19 @@ func (b boltDatabase) Delete() error {
 
 func (b boltDatabase) List() (*[]CommandInformation, error) {
 	var ci []CommandInformation
-	err := b.BoltDb.View(func(tx *bolt.Tx) error {
+	err := b.BoltDb.Update(func(tx *bolt.Tx) error {
 		b, err := tx.CreateBucketIfNotExists(Stba(bucket))
 		if err != nil {
 			return err
 		}
 		c := b.Cursor()
 		for k, v := c.First(); k != nil; k, v = c.Next() {
-			fmt.Printf("key=%s, value=%s\n", k, v)
+			var tci CommandInformation
+			err := json.Unmarshal(v, &tci)
+			if err != nil {
+				return err
+			}
+			ci = append(ci, tci)
 		}
 		return nil
 	})

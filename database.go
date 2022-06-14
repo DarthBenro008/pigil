@@ -12,8 +12,8 @@ type databaseService struct {
 
 type CommandInformation struct {
 	CommandName      string
-	CommandArguments string
-	ExecutionTime    string
+	CommandArguments []string
+	ExecutionTime    int64
 	WasSuccessful    bool
 }
 
