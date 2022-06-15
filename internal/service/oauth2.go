@@ -2,7 +2,9 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"gnoty/internal/types"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"log"
@@ -21,16 +23,17 @@ func OAuthGoogleConfig() *oauth2.Config {
 	}
 }
 
-func GoogleLogin(config *oauth2.Config) {
+func GoogleLogin(config *oauth2.Config) *oauth2.Config {
 	//TODO: state generation
 	url := config.AuthCodeURL("", oauth2.AccessTypeOffline)
 	fmt.Printf("Click on this link to authenticate yourself with gnoty! \n%s"+
 		"\n", url)
-	GoogleCallback(config)
+	return config
 }
 
-func GoogleCallback(config *oauth2.Config) {
+func GoogleCallback(config *oauth2.Config) types.UserInformation {
 	server := http.Server{Addr: ":6969", Handler: nil}
+	var userData types.UserInformation
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
@@ -51,15 +54,31 @@ func GoogleCallback(config *oauth2.Config) {
 		if err != nil {
 			log.Fatal(err.Error())
 		}
-		SendEmail(config.Client(context.Background(), token),
-			"") //TODO: Fetch user data
-		err = server.Shutdown(context.Background())
+		resp, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
 		if err != nil {
 			log.Fatal(err.Error())
 		}
+		googleResponse := types.GoogleResponse{}
+		err = json.NewDecoder(resp.Body).Decode(&googleResponse)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+		userData = types.UserInformation{
+			Name:         googleResponse.GivenName + " " + googleResponse.FamilyName,
+			Email:        googleResponse.Email,
+			AccessToken:  token.AccessToken,
+			RefreshToken: token.RefreshToken,
+		}
+		go func() {
+			err = server.Shutdown(context.Background())
+			if err != nil {
+				log.Fatal("ono", err.Error())
+			}
+		}()
 	})
 	err := server.ListenAndServe()
-	if err != nil {
-		log.Fatal(err.Error())
+	if err != nil && err != http.ErrServerClosed {
+		log.Fatal(err.Error(), "ggwp")
 	}
+	return userData
 }

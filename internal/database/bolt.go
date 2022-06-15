@@ -36,7 +36,7 @@ func (b boltDatabase) insert(k []byte, v interface{}) error {
 }
 
 func (b boltDatabase) InsertConfig(information types.ConfigurationInformation) error {
-	return b.insert(utils.Stba(information.Key), information.Value)
+	return b.insert(utils.Stba(information.Key), information)
 }
 
 func (b boltDatabase) GetConfig(key string) (string, error) {

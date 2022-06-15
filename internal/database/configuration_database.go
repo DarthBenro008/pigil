@@ -6,6 +6,7 @@ type configurationDatabase interface {
 	InsertConfig(information types.ConfigurationInformation) error
 	GetConfig(key string) (string, error)
 	ListConfig() (*[]types.ConfigurationInformation, error)
+	DeleteConfigDb() error
 	DeleteConfig(key string) error
 }
 
@@ -23,4 +24,8 @@ func (d databaseService) ListConfig() (*[]types.ConfigurationInformation, error)
 
 func (d databaseService) DeleteConfig(key string) error {
 	return d.configDb.DeleteConfig(key)
+}
+
+func (d databaseService) DeleteConfigDb() error {
+	return d.configDb.Delete()
 }

@@ -44,6 +44,10 @@ func cliHandler(args []string, service database.Service) {
 		ListCommand(service)
 	case utils.CliAuth:
 		GoogleAuth(service)
+	case utils.CliStatus:
+		Status(service)
+	case utils.CliLogout:
+		Logout(service)
 	}
 }
 
