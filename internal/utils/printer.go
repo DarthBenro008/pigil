@@ -2,12 +2,12 @@ package utils
 
 import (
 	"github.com/jedib0t/go-pretty/v6/table"
-	"gnoty/internal/database"
+	"gnoty/internal/types"
 	"os"
 	"time"
 )
 
-func PrintInformation(data *[]database.CommandInformation) {
+func PrintInformation(data *[]types.CommandInformation) {
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
 	t.AppendHeader(table.Row{"Command Name", "Command Arguments",

@@ -1,8 +1,9 @@
 package utils
 
 const (
-	Bucket       = "gnoty_bucket"
-	CliDb        = "database"
+	LocalBucket  = "gnoty_storage"
+	ConfigBucket = "gnoty_config"
+	CliDb        = "db"
 	CliAuth      = "auth"
 	DatabaseName = "gnoty.database"
 )
