@@ -3,14 +3,14 @@ package main
 import (
 	"fmt"
 	"github.com/joho/godotenv"
-	"gnoty/internal/database"
-	"gnoty/internal/types"
-	"gnoty/internal/utils"
 	bolt "go.etcd.io/bbolt"
 	"io"
 	"log"
 	"os"
 	"os/exec"
+	"pigil/internal/database"
+	"pigil/internal/types"
+	"pigil/internal/utils"
 	"time"
 )
 
@@ -61,7 +61,7 @@ func executor(args []string, service database.Service) {
 	}
 	start := time.Now()
 	if err := cmd.Start(); err != nil {
-		log.Fatal("gnoty info:", err)
+		log.Fatal("pigil info:", err)
 	}
 	ci := types.CommandInformation{
 		CommandName:      args[1],

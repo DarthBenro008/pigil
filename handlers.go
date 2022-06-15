@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	"gnoty/internal/database"
-	service2 "gnoty/internal/service"
-	"gnoty/internal/types"
-	"gnoty/internal/utils"
 	"golang.org/x/oauth2"
 	"log"
+	"pigil/internal/database"
+	service2 "pigil/internal/service"
+	"pigil/internal/types"
+	"pigil/internal/utils"
 )
 
 func InsertCommand(service database.Service,

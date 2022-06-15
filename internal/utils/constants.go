@@ -1,8 +1,8 @@
 package utils
 
 const (
-	LocalBucket  = "gnoty_storage"
-	ConfigBucket = "gnoty_config"
+	LocalBucket  = "pigil_storage"
+	ConfigBucket = "pigil_config"
 	CliDb        = "db"
 	CliAuth      = "auth"
 	CliStatus    = "status"
@@ -10,5 +10,5 @@ const (
 	UserEmail    = "email"
 	UserAT       = "access_token"
 	UserRT       = "refresh_token"
-	DatabaseName = "gnoty.database"
+	DatabaseName = "pigil.database"
 )

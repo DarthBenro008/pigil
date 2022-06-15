@@ -1,6 +1,6 @@
 package database
 
-import "gnoty/internal/types"
+import "pigil/internal/types"
 
 type configurationDatabase interface {
 	InsertConfig(information types.ConfigurationInformation) error

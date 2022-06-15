@@ -2,8 +2,8 @@ package utils
 
 import (
 	"github.com/jedib0t/go-pretty/v6/table"
-	"gnoty/internal/types"
 	"os"
+	"pigil/internal/types"
 	"time"
 )
 

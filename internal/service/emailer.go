@@ -15,7 +15,7 @@ func SendEmail(client *http.Client, email string) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	emailBody := "This is an test email from gnoty!"
+	emailBody := "This is an test email from pigil!"
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -23,7 +23,7 @@ func SendEmail(client *http.Client, email string) {
 	var message gmail.Message
 
 	emailTo := "To: " + email + "\r\n"
-	subject := "Subject: " + "Gnoty sends regards!" + "\n"
+	subject := "Subject: " + "Pigil sends regards!" + "\n"
 	mime := "MIME-version: 1.0;\nContent-Type: text/plain; charset=\"UTF-8\";\n\n"
 	msg := []byte(emailTo + subject + mime + "\n" + emailBody)
 

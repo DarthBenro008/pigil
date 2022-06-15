@@ -4,12 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"gnoty/internal/types"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"log"
 	"net/http"
 	"os"
+	"pigil/internal/types"
 )
 
 func OAuthGoogleConfig() *oauth2.Config {
@@ -26,7 +26,7 @@ func OAuthGoogleConfig() *oauth2.Config {
 func GoogleLogin(config *oauth2.Config) *oauth2.Config {
 	//TODO: state generation
 	url := config.AuthCodeURL("", oauth2.AccessTypeOffline)
-	fmt.Printf("Click on this link to authenticate yourself with gnoty! \n%s"+
+	fmt.Printf("Click on this link to authenticate yourself with pigil! \n%s"+
 		"\n", url)
 	return config
 }
@@ -49,7 +49,7 @@ func GoogleCallback(config *oauth2.Config) types.UserInformation {
 		fmt.Println(token.AccessToken)
 		w.WriteHeader(http.StatusCreated)
 		_, err = fmt.Fprintf(w,
-			"Your email has been linked via gnoty! You can close this webpage"+
+			"Your email has been linked via pigil! You can close this webpage"+
 				" now!")
 		if err != nil {
 			log.Fatal(err.Error())

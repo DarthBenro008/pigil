@@ -1,4 +1,4 @@
-module gnoty
+module pigil
 
 go 1.17
 

@@ -1,6 +1,6 @@
 package database
 
-import "gnoty/internal/types"
+import "pigil/internal/types"
 
 type localDatabase interface {
 	Insert(information types.CommandInformation) error

@@ -2,9 +2,9 @@ package database
 
 import (
 	"encoding/json"
-	"gnoty/internal/types"
-	"gnoty/internal/utils"
 	bolt "go.etcd.io/bbolt"
+	"pigil/internal/types"
+	"pigil/internal/utils"
 	"strconv"
 )
 
