@@ -74,6 +74,7 @@ func executor(args []string, service database.Service) {
 	fmt.Printf("%s", errors)
 	if err := cmd.Wait(); err != nil {
 		ci.WasSuccessful = false
+		Notify(service)
 		//log.Fatal(err.Error())
 	}
 	InsertCommand(service, ci)

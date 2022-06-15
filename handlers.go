@@ -1,11 +1,13 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"gnoty/internal/database"
 	service2 "gnoty/internal/service"
 	"gnoty/internal/types"
 	"gnoty/internal/utils"
+	"golang.org/x/oauth2"
 	"log"
 )
 
@@ -26,6 +28,14 @@ func ListCommand(service database.Service) {
 }
 
 func GoogleAuth(service database.Service) {
+	email, err := service.GetConfig(utils.UserEmail)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	if email != "" {
+		fmt.Printf("already logged in with %s\n", email)
+		return
+	}
 	config := service2.OAuthGoogleConfig()
 	config = service2.GoogleLogin(config)
 	data := service2.GoogleCallback(config)
@@ -42,7 +52,7 @@ func GoogleAuth(service database.Service) {
 		Value: data.RefreshToken,
 	}
 
-	err := service.InsertConfig(userEmail)
+	err = service.InsertConfig(userEmail)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -69,4 +79,24 @@ func Logout(service database.Service) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+}
+
+func Notify(service database.Service) {
+	email, err := service.GetConfig(utils.UserEmail)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	if email == "" {
+		fmt.Println("not authenticated")
+	}
+	at, err := service.GetConfig(utils.UserAT)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	if email == "" {
+		fmt.Println("not authenticated")
+	}
+	creds := oauth2.Token{AccessToken: at}
+	client := service2.OAuthGoogleConfig().Client(context.Background(), &creds)
+	service2.SendEmail(client, email)
 }

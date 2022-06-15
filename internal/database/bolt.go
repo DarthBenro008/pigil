@@ -44,6 +44,10 @@ func (b boltDatabase) GetConfig(key string) (string, error) {
 	err := b.BoltDb.Update(func(tx *bolt.Tx) error {
 		b, err := tx.CreateBucketIfNotExists(utils.Stba(b.bucketName))
 		res := b.Get(utils.Stba(key))
+		if len(res) == 0 {
+			tci.Value = ""
+			return nil
+		}
 		err = json.Unmarshal(res, &tci)
 		return err
 	})
