@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/joho/godotenv"
+	"gnoty/internal/database"
+	"gnoty/internal/service"
+	"gnoty/internal/utils"
 	bolt "go.etcd.io/bbolt"
 	"io"
 	"log"
@@ -13,7 +16,7 @@ import (
 
 func main() {
 
-	db, err := bolt.Open(databaseName, 0666, nil)
+	db, err := bolt.Open(utils.DatabaseName, 0666, nil)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -22,8 +25,8 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	boltDatabase := NewBoldDbService(db)
-	dbService := NewDatabaseService(boltDatabase)
+	boltDatabase := service.NewBoldDbService(db)
+	dbService := database.NewDatabaseService(boltDatabase)
 
 	if os.Args[1] == "bumf" {
 		cliHandler(os.Args, dbService)
@@ -34,16 +37,16 @@ func main() {
 
 }
 
-func cliHandler(args []string, service DatabaseService) {
+func cliHandler(args []string, service database.DatabaseService) {
 	switch args[2] {
-	case cliDb:
+	case utils.CliDb:
 		ListCommand(service)
-	case cliAuth:
+	case utils.CliAuth:
 		GoogleAuth(service)
 	}
 }
 
-func executor(args []string, service DatabaseService) {
+func executor(args []string, service database.DatabaseService) {
 	cmd := exec.Command(args[1])
 	cmd.Args = args[1:]
 	stderr, err := cmd.StderrPipe()
@@ -54,7 +57,7 @@ func executor(args []string, service DatabaseService) {
 	if err := cmd.Start(); err != nil {
 		log.Fatal("gnoty info:", err)
 	}
-	ci := CommandInformation{
+	ci := database.CommandInformation{
 		CommandName:      args[1],
 		CommandArguments: args[2:],
 		ExecutionTime:    time.Now().UnixMicro(),

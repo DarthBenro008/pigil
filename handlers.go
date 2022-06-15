@@ -1,25 +1,28 @@
 package main
 
 import (
+	"gnoty/internal/database"
+	service2 "gnoty/internal/service"
+	"gnoty/internal/utils"
 	"log"
 )
 
-func InsertCommand(service DatabaseService, information CommandInformation) {
+func InsertCommand(service database.DatabaseService, information database.CommandInformation) {
 	err := service.Insert(information)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 }
 
-func ListCommand(service DatabaseService) {
+func ListCommand(service database.DatabaseService) {
 	data, err := service.List()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	PrintInformation(data)
+	utils.PrintInformation(data)
 }
 
-func GoogleAuth(service DatabaseService) {
-	config := OAuthGoogleConfig()
-	GoogleLogin(config)
+func GoogleAuth(service database.DatabaseService) {
+	config := service2.OAuthGoogleConfig()
+	service2.GoogleLogin(config)
 }

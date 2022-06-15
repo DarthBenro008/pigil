@@ -1,4 +1,8 @@
-package main
+package database
+
+import (
+	"gnoty/internal/service"
+)
 
 type DatabaseService interface {
 	Insert(information CommandInformation) error
@@ -7,7 +11,7 @@ type DatabaseService interface {
 }
 
 type databaseService struct {
-	boltDatabase BoltDatabase
+	boltDatabase service.BoltDatabase
 }
 
 type CommandInformation struct {
@@ -29,6 +33,6 @@ func (d databaseService) List() (*[]CommandInformation, error) {
 	return d.boltDatabase.List()
 }
 
-func NewDatabaseService(database BoltDatabase) DatabaseService {
+func NewDatabaseService(database service.BoltDatabase) DatabaseService {
 	return &databaseService{boltDatabase: database}
 }
