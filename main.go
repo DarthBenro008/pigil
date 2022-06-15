@@ -59,13 +59,14 @@ func executor(args []string, service database.Service) {
 	if err != nil {
 		log.Println("stderr fails")
 	}
+	start := time.Now()
 	if err := cmd.Start(); err != nil {
 		log.Fatal("gnoty info:", err)
 	}
 	ci := types.CommandInformation{
 		CommandName:      args[1],
 		CommandArguments: args[2:],
-		ExecutionTime:    time.Now().UnixMicro(),
+		TimeOfExecution:  time.Now().UnixMicro(),
 		WasSuccessful:    true,
 	}
 	results, _ := io.ReadAll(stdout)
@@ -77,5 +78,9 @@ func executor(args []string, service database.Service) {
 		Notify(service)
 		//log.Fatal(err.Error())
 	}
+	end := time.Now()
+	life := end.Sub(start)
+	fmt.Printf("runtime: %f seconds\n", life.Seconds())
+	ci.ExecutionTime = life.Seconds()
 	InsertCommand(service, ci)
 }

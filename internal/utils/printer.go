@@ -10,13 +10,14 @@ import (
 func PrintInformation(data *[]types.CommandInformation) {
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
-	t.AppendHeader(table.Row{"Command Name", "Command Arguments",
-		"Time of Execution",
+	t.AppendHeader(table.Row{"Time of Execution", "Command Name",
+		"Command Arguments", "Execution Time (in seconds)",
 		"Was Successful"})
 	t.SetAutoIndex(true)
 	for _, items := range *data {
-		t.AppendRow(table.Row{items.CommandName, items.CommandArguments,
-			time.UnixMicro(items.ExecutionTime).Format(time.Stamp),
+		t.AppendRow(table.Row{time.UnixMicro(items.TimeOfExecution).Format(
+			time.Stamp), items.CommandName, items.CommandArguments,
+			items.ExecutionTime,
 			items.WasSuccessful})
 	}
 	t.Render()

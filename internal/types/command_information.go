@@ -3,6 +3,7 @@ package types
 type CommandInformation struct {
 	CommandName      string
 	CommandArguments []string
-	ExecutionTime    int64
+	TimeOfExecution  int64
+	ExecutionTime    float64
 	WasSuccessful    bool
 }
