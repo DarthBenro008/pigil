@@ -15,12 +15,14 @@ func OAuthGoogleConfig() *oauth2.Config {
 		RedirectURL:  "http://localhost:6969",
 		ClientID:     os.Getenv("GOOGLE_OAUTH_CLIENT_ID"),
 		ClientSecret: os.Getenv("GOOGLE_OAUTH_CLIENT_SECRET"),
-		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"},
-		Endpoint:     google.Endpoint,
+		Scopes: []string{"https://www.googleapis.com/auth/userinfo." +
+			"profile", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/gmail.compose"},
+		Endpoint: google.Endpoint,
 	}
 }
 
 func GoogleLogin(config *oauth2.Config) {
+	//TODO: state generation
 	url := config.AuthCodeURL("", oauth2.AccessTypeOffline)
 	fmt.Printf("Click on this link to authenticate yourself with gnoty! \n%s"+
 		"\n", url)
@@ -41,7 +43,7 @@ func GoogleCallback(config *oauth2.Config) {
 		if err != nil {
 			log.Fatal("could not rec", err.Error())
 		}
-		fmt.Println(token.RefreshToken)
+		fmt.Println(token.AccessToken)
 		w.WriteHeader(http.StatusCreated)
 		_, err = fmt.Fprintf(w,
 			"Your email has been linked via gnoty! You can close this webpage"+
@@ -49,6 +51,8 @@ func GoogleCallback(config *oauth2.Config) {
 		if err != nil {
 			log.Fatal(err.Error())
 		}
+		SendEmail(config.Client(context.Background(), token),
+			"") //TODO: Fetch user data
 		err = server.Shutdown(context.Background())
 		if err != nil {
 			log.Fatal(err.Error())
