@@ -4,25 +4,30 @@ import (
 	"context"
 	"fmt"
 	"golang.org/x/oauth2"
-	"log"
 	"pigil/internal/database"
 	service2 "pigil/internal/service"
 	"pigil/internal/types"
 	"pigil/internal/utils"
 )
 
+const handlerTag = "handlers"
+
 func InsertCommand(service database.Service,
 	information types.CommandInformation) {
 	err := service.Insert(information)
 	if err != nil {
-		log.Fatal(err.Error())
+		utils.ErrorLogger(err, handlerTag)
 	}
 }
 
 func ListCommand(service database.Service) {
 	data, err := service.List()
 	if err != nil {
-		log.Fatal(err.Error())
+		utils.ErrorLogger(err, handlerTag)
+	}
+	if len(*data) == 0 {
+		utils.InformationLogger("No history found yet!")
+		return
 	}
 	utils.PrintInformation(data)
 }
@@ -30,10 +35,11 @@ func ListCommand(service database.Service) {
 func GoogleAuth(service database.Service) {
 	email, err := service.GetConfig(utils.UserEmail)
 	if err != nil {
-		log.Fatal(err.Error())
+		utils.ErrorLogger(err, handlerTag)
 	}
 	if email != "" {
-		fmt.Printf("already logged in with %s\n", email)
+		utils.InformationLogger(fmt.Sprintf("already logged in with %s\n",
+			email))
 		return
 	}
 	config := service2.OAuthGoogleConfig()
@@ -54,49 +60,52 @@ func GoogleAuth(service database.Service) {
 
 	err = service.InsertConfig(userEmail)
 	if err != nil {
-		log.Fatal(err.Error())
+		utils.ErrorLogger(err, handlerTag)
 	}
 	err = service.InsertConfig(userRT)
 	if err != nil {
-		log.Fatal(err.Error())
+		utils.ErrorLogger(err, handlerTag)
 	}
 	err = service.InsertConfig(userAT)
 	if err != nil {
-		log.Fatal(err.Error())
+		utils.ErrorLogger(err, handlerTag)
 	}
 }
 
 func Status(service database.Service) {
 	list, err := service.ListConfig()
 	if err != nil {
-		log.Fatal(err.Error())
+		utils.ErrorLogger(err, handlerTag)
 	}
-	fmt.Println(list)
+	if len(*list) == 0 {
+		utils.InformationLogger("No settings found yet!")
+		return
+	}
+	utils.StatusPrinter(list)
 }
 
 func Logout(service database.Service) {
 	err := service.DeleteConfigDb()
 	if err != nil {
-		log.Fatal(err.Error())
+		utils.ErrorLogger(err, handlerTag)
 	}
 }
 
 func Notify(service database.Service) {
 	email, err := service.GetConfig(utils.UserEmail)
 	if err != nil {
-		log.Fatal(err.Error())
+		utils.ErrorLogger(err, handlerTag)
 	}
 	if email == "" {
-		fmt.Println("not authenticated")
+		utils.ErrorInformation("You are not authenticated! Pigil cannot" +
+			" notify via email, please run `pigil bumf auth`")
+		return
 	}
 	at, err := service.GetConfig(utils.UserAT)
 	if err != nil {
-		log.Fatal(err.Error())
+		utils.ErrorLogger(err, handlerTag)
 	}
-	if email == "" {
-		fmt.Println("not authenticated")
-	}
-	creds := oauth2.Token{AccessToken: at}
-	client := service2.OAuthGoogleConfig().Client(context.Background(), &creds)
+	cred := oauth2.Token{AccessToken: at}
+	client := service2.OAuthGoogleConfig().Client(context.Background(), &cred)
 	service2.SendEmail(client, email)
 }

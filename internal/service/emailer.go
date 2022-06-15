@@ -5,19 +5,21 @@ import (
 	"encoding/base64"
 	"google.golang.org/api/gmail/v1"
 	"google.golang.org/api/option"
-	"log"
 	"net/http"
+	"pigil/internal/utils"
 )
+
+const mailerTag = "mailer"
 
 func SendEmail(client *http.Client, email string) {
 	srv, err := gmail.NewService(context.Background(),
 		option.WithHTTPClient(client))
 	if err != nil {
-		log.Fatal(err.Error())
+		utils.ErrorLogger(err, mailerTag)
 	}
 	emailBody := "This is an test email from pigil!"
 	if err != nil {
-		log.Fatal(err.Error())
+		utils.ErrorLogger(err, mailerTag)
 	}
 
 	var message gmail.Message
@@ -30,6 +32,6 @@ func SendEmail(client *http.Client, email string) {
 	message.Raw = base64.URLEncoding.EncodeToString(msg)
 	_, err = srv.Users.Messages.Send("me", &message).Do()
 	if err != nil {
-		log.Fatal(err.Error())
+		utils.ErrorLogger(err, mailerTag)
 	}
 }

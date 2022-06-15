@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"os"
 	"pigil/internal/types"
@@ -19,6 +20,23 @@ func PrintInformation(data *[]types.CommandInformation) {
 			time.Stamp), items.CommandName, items.CommandArguments,
 			items.ExecutionTime,
 			items.WasSuccessful})
+	}
+	t.Render()
+}
+
+func GreenPrinter(information string) {
+	fmt.Printf("%s%s%s\n", Green, information, Reset)
+}
+
+func StatusPrinter(data *[]types.ConfigurationInformation) {
+	t := table.NewWriter()
+	t.SetOutputMirror(os.Stdout)
+	t.AppendHeader(table.Row{"Setting Name", "Value"})
+	t.SetAutoIndex(true)
+	for _, items := range *data {
+		if items.Key != UserAT && items.Key != UserRT {
+			t.AppendRow(table.Row{items.Key, items.Value})
+		}
 	}
 	t.Render()
 }

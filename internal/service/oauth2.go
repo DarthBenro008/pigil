@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
-	"log"
 	"net/http"
 	"os"
 	"pigil/internal/types"
+	"pigil/internal/utils"
 )
+
+const oauthTag = "oauth2"
 
 func OAuthGoogleConfig() *oauth2.Config {
 	return &oauth2.Config{
@@ -38,13 +40,13 @@ func GoogleCallback(config *oauth2.Config) types.UserInformation {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "could not parse query: %v", err)
+			utils.ErrorLogger(err, oauthTag)
 			w.WriteHeader(http.StatusBadRequest)
 		}
 		code := r.FormValue("code")
 		token, err := config.Exchange(context.Background(), code)
 		if err != nil {
-			log.Fatal("could not rec", err.Error())
+			utils.ErrorLogger(err, oauthTag)
 		}
 		fmt.Println(token.AccessToken)
 		w.WriteHeader(http.StatusCreated)
@@ -52,16 +54,16 @@ func GoogleCallback(config *oauth2.Config) types.UserInformation {
 			"Your email has been linked via pigil! You can close this webpage"+
 				" now!")
 		if err != nil {
-			log.Fatal(err.Error())
+			utils.ErrorLogger(err, oauthTag)
 		}
 		resp, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
 		if err != nil {
-			log.Fatal(err.Error())
+			utils.ErrorLogger(err, oauthTag)
 		}
 		googleResponse := types.GoogleResponse{}
 		err = json.NewDecoder(resp.Body).Decode(&googleResponse)
 		if err != nil {
-			log.Fatal(err.Error())
+			utils.ErrorLogger(err, oauthTag)
 		}
 		userData = types.UserInformation{
 			Name:         googleResponse.GivenName + " " + googleResponse.FamilyName,
@@ -72,13 +74,13 @@ func GoogleCallback(config *oauth2.Config) types.UserInformation {
 		go func() {
 			err = server.Shutdown(context.Background())
 			if err != nil {
-				log.Fatal("ono", err.Error())
+				utils.ErrorLogger(err, oauthTag)
 			}
 		}()
 	})
 	err := server.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {
-		log.Fatal(err.Error(), "ggwp")
+		utils.ErrorLogger(err, oauthTag)
 	}
 	return userData
 }

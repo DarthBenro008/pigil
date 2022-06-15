@@ -1,11 +1,11 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"github.com/joho/godotenv"
 	bolt "go.etcd.io/bbolt"
 	"io"
-	"log"
 	"os"
 	"os/exec"
 	"pigil/internal/database"
@@ -14,16 +14,18 @@ import (
 	"time"
 )
 
+const mainTag = "main"
+
 func main() {
 
 	db, err := bolt.Open(utils.DatabaseName, 0666, nil)
 	if err != nil {
-		log.Fatal(err.Error())
+		utils.ErrorLogger(err, mainTag)
 	}
 
 	err = godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		utils.ErrorLogger(errors.New("cannot load .env file"), mainTag)
 	}
 	boltLocalDb := database.NewBoltDbService(db, utils.LocalBucket)
 	boltConfigDb := database.NewBoltDbService(db, utils.ConfigBucket)
@@ -57,11 +59,11 @@ func executor(args []string, service database.Service) {
 	stderr, err := cmd.StderrPipe()
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		log.Println("stderr fails")
+		utils.ErrorInformation("stderr pipe broke")
 	}
 	start := time.Now()
 	if err := cmd.Start(); err != nil {
-		log.Fatal("pigil info:", err)
+		utils.ErrorLogger(err, mainTag)
 	}
 	ci := types.CommandInformation{
 		CommandName:      args[1],
@@ -71,16 +73,16 @@ func executor(args []string, service database.Service) {
 	}
 	results, _ := io.ReadAll(stdout)
 	fmt.Printf("%s", results)
-	errors, _ := io.ReadAll(stderr)
-	fmt.Printf("%s", errors)
+	errorOutput, _ := io.ReadAll(stderr)
+	fmt.Printf("%s", errorOutput)
 	if err := cmd.Wait(); err != nil {
 		ci.WasSuccessful = false
 		Notify(service)
-		//log.Fatal(err.Error())
+		utils.ErrorInformation(err.Error())
 	}
 	end := time.Now()
 	life := end.Sub(start)
-	fmt.Printf("runtime: %f seconds\n", life.Seconds())
+	utils.GreenPrinter(fmt.Sprintf("runtime: %f seconds", life.Seconds()))
 	ci.ExecutionTime = life.Seconds()
 	InsertCommand(service, ci)
 }
