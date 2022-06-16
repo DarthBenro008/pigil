@@ -5,3 +5,4 @@ pigil
 todo.md
 dist/
 secrets.txt
+node_modules/

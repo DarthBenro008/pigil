@@ -1,0 +1,32 @@
+{
+  "name": "pigil",
+  "version": "0.1.1",
+  "description": "Process vIGILance system that notifies you when your process fails via an e-mail, and is also capable of maintaining a record of all your commands for easier tracking.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DarthBenro008/pigil.git"
+  },
+  "keywords": [
+    "process-watcher"
+  ],
+  "author": "DarthBenro008",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DarthBenro008/pigil/issues"
+  },
+  "homepage": "https://github.com/DarthBenro008/pigil#readme",
+  "dependencies": {
+    "@gzuidhof/go-npm": "^0.1.13"
+  },
+  "postinstall": "go-npm install",
+  "preuninstall": "go-npm uninstall",
+  "goBinary": {
+    "name": "pigil",
+    "path": "./bin",
+    "url": "https://github.com/DarthBenro008/pigil/releases/download/v{{version}}/myGoPackage_{{version}}_{{platform}}_{{arch}}.tar.gz"
+  }
+}

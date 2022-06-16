@@ -27,7 +27,7 @@ func OAuthGoogleConfig() *oauth2.Config {
 func GoogleLogin(config *oauth2.Config) *oauth2.Config {
 	//TODO: state generation
 	url := config.AuthCodeURL("", oauth2.AccessTypeOffline)
-	fmt.Printf("Click on this link to authenticate yourself with github.com/DarthBenro008/pigil! \n%s"+
+	fmt.Printf("Click on this link to authenticate yourself with pigil! \n%s"+
 		"\n", url)
 	return config
 }
