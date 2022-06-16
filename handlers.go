@@ -91,7 +91,7 @@ func Logout(service database.Service) {
 	}
 }
 
-func Notify(service database.Service) {
+func Notify(service database.Service, information types.CommandInformation) {
 	email, err := service.GetConfig(utils.UserEmail)
 	if err != nil {
 		utils.ErrorLogger(err, handlerTag)
@@ -107,5 +107,5 @@ func Notify(service database.Service) {
 	}
 	cred := oauth2.Token{AccessToken: at}
 	client := service2.OAuthGoogleConfig().Client(context.Background(), &cred)
-	service2.SendEmail(client, email)
+	service2.SendEmail(client, email, information)
 }

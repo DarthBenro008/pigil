@@ -6,6 +6,7 @@ import (
 	"github.com/joho/godotenv"
 	bolt "go.etcd.io/bbolt"
 	"io"
+	"log"
 	"os"
 	"os/exec"
 	"pigil/internal/database"
@@ -17,8 +18,19 @@ import (
 const mainTag = "main"
 
 func main() {
-
-	db, err := bolt.Open(utils.DatabaseName, 0666, nil)
+	dirname, err := os.UserHomeDir()
+	if err != nil {
+		utils.ErrorLogger(err, mainTag)
+	}
+	dirname = fmt.Sprintf("%s/%s", dirname, ".pigil")
+	if _, err := os.Stat(dirname); errors.Is(err, os.ErrNotExist) {
+		err := os.Mkdir(dirname, os.ModePerm)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+	dirname = fmt.Sprintf("%s/%s", dirname, utils.DatabaseName)
+	db, err := bolt.Open(dirname, 0666, nil)
 	if err != nil {
 		utils.ErrorLogger(err, mainTag)
 	}
@@ -50,6 +62,8 @@ func cliHandler(args []string, service database.Service) {
 		Status(service)
 	case utils.CliLogout:
 		Logout(service)
+	default:
+		utils.InformationLogger("Invalid Pigil Command!")
 	}
 }
 
@@ -75,14 +89,16 @@ func executor(args []string, service database.Service) {
 	fmt.Printf("%s", results)
 	errorOutput, _ := io.ReadAll(stderr)
 	fmt.Printf("%s", errorOutput)
-	if err := cmd.Wait(); err != nil {
-		ci.WasSuccessful = false
-		Notify(service)
-		utils.ErrorInformation(err.Error())
-	}
+	err = cmd.Wait()
 	end := time.Now()
 	life := end.Sub(start)
 	utils.GreenPrinter(fmt.Sprintf("runtime: %f seconds", life.Seconds()))
 	ci.ExecutionTime = life.Seconds()
+	if err != nil {
+		ci.WasSuccessful = false
+		Notify(service, ci)
+		utils.ErrorInformation(err.Error())
+	}
+
 	InsertCommand(service, ci)
 }
