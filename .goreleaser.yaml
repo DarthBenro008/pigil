@@ -19,6 +19,13 @@ archives:
       windows: Windows
       386: i386
       amd64: x86_64
+brews:
+  -
+    tap:
+      owner: DarthBenro008
+      name: homebrew-pigil
+    description: "Pigil - Homegrown Proces Vigilance System"
+    folder: Formula
 checksum:
   name_template: "checksums.txt"
 snapshot:
