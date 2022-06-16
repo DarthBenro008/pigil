@@ -105,7 +105,11 @@ func Notify(service database.Service, information types.CommandInformation) {
 	if err != nil {
 		utils.ErrorLogger(err, handlerTag)
 	}
-	cred := oauth2.Token{AccessToken: at}
+	rt, err := service.GetConfig(utils.UserRT)
+	if err != nil {
+		utils.ErrorLogger(err, handlerTag)
+	}
+	cred := oauth2.Token{AccessToken: at, RefreshToken: rt}
 	client := service2.OAuthGoogleConfig().Client(context.Background(), &cred)
 	service2.SendEmail(client, email, information)
 }

@@ -47,7 +47,6 @@ func GoogleCallback(config *oauth2.Config) types.UserInformation {
 		if err != nil {
 			utils.ErrorLogger(err, oauthTag)
 		}
-		fmt.Println(token.AccessToken)
 		w.WriteHeader(http.StatusCreated)
 		_, err = fmt.Fprintf(w,
 			"Your email has been linked via pigil! You can close this webpage"+
