@@ -4,14 +4,14 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
+	"github.com/DarthBenro008/pigil/internal/database"
+	"github.com/DarthBenro008/pigil/internal/types"
+	"github.com/DarthBenro008/pigil/internal/utils"
 	bolt "go.etcd.io/bbolt"
 	"io"
 	"log"
 	"os"
 	"os/exec"
-	"pigil/internal/database"
-	"pigil/internal/types"
-	"pigil/internal/utils"
 	"strings"
 	"time"
 )
@@ -29,7 +29,7 @@ func main() {
 	secretsArray := strings.Split(secrets, " ")
 	utils.GoogleClientId = secretsArray[0]
 	utils.GoogleClientSecret = secretsArray[1]
-	dirname = fmt.Sprintf("%s/%s", dirname, ".pigil")
+	dirname = fmt.Sprintf("%s/%s", dirname, ".github.com/DarthBenro008/pigil")
 	if _, err := os.Stat(dirname); errors.Is(err, os.ErrNotExist) {
 		err := os.Mkdir(dirname, os.ModePerm)
 		if err != nil {
@@ -70,7 +70,7 @@ func cliHandler(args []string, service database.Service) {
 	case utils.CliLogout:
 		Logout(service)
 	default:
-		utils.InformationLogger("Invalid Pigil Command!")
+		utils.InformationLogger("Invalid github.com/DarthBenro008/pigil Command!")
 	}
 }
 

@@ -3,11 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/DarthBenro008/pigil/internal/database"
+	service2 "github.com/DarthBenro008/pigil/internal/service"
+	"github.com/DarthBenro008/pigil/internal/types"
+	"github.com/DarthBenro008/pigil/internal/utils"
 	"golang.org/x/oauth2"
-	"pigil/internal/database"
-	service2 "pigil/internal/service"
-	"pigil/internal/types"
-	"pigil/internal/utils"
 )
 
 const handlerTag = "handlers"
@@ -97,8 +97,8 @@ func Notify(service database.Service, information types.CommandInformation) {
 		utils.ErrorLogger(err, handlerTag)
 	}
 	if email == "" {
-		utils.ErrorInformation("You are not authenticated! Pigil cannot" +
-			" notify via email, please run `pigil bumf auth`")
+		utils.ErrorInformation("You are not authenticated! github.com/DarthBenro008/pigil cannot" +
+			" notify via email, please run `github.com/DarthBenro008/pigil bumf auth`")
 		return
 	}
 	at, err := service.GetConfig(utils.UserAT)

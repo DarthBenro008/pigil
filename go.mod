@@ -1,4 +1,4 @@
-module pigil
+module github.com/DarthBenro008/pigil
 
 go 1.17
 

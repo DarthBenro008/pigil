@@ -2,9 +2,9 @@ package utils
 
 import (
 	"fmt"
+	"github.com/DarthBenro008/pigil/internal/types"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"os"
-	"pigil/internal/types"
 	"time"
 )
 

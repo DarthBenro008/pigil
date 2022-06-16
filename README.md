@@ -54,7 +54,7 @@ brew install pigil
 If you have golang installed you can install it via running:
 
 ```bash
-go install github.com/DarthBenro008/pigil
+go install github.com/DarthBenro008/pigil@latest
 ```
 
 ### Manual Installation

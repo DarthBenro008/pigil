@@ -1,6 +1,6 @@
 package database
 
-import "pigil/internal/types"
+import "github.com/DarthBenro008/pigil/internal/types"
 
 type configurationDatabase interface {
 	InsertConfig(information types.ConfigurationInformation) error

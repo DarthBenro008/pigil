@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/DarthBenro008/pigil/internal/types"
+	"github.com/DarthBenro008/pigil/internal/utils"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"net/http"
-	"pigil/internal/types"
-	"pigil/internal/utils"
 )
 
 const oauthTag = "oauth2"
@@ -27,7 +27,7 @@ func OAuthGoogleConfig() *oauth2.Config {
 func GoogleLogin(config *oauth2.Config) *oauth2.Config {
 	//TODO: state generation
 	url := config.AuthCodeURL("", oauth2.AccessTypeOffline)
-	fmt.Printf("Click on this link to authenticate yourself with pigil! \n%s"+
+	fmt.Printf("Click on this link to authenticate yourself with github.com/DarthBenro008/pigil! \n%s"+
 		"\n", url)
 	return config
 }
@@ -49,7 +49,7 @@ func GoogleCallback(config *oauth2.Config) types.UserInformation {
 		}
 		w.WriteHeader(http.StatusCreated)
 		_, err = fmt.Fprintf(w,
-			"Your email has been linked via pigil! You can close this webpage"+
+			"Your email has been linked via github.com/DarthBenro008/pigil! You can close this webpage"+
 				" now!")
 		if err != nil {
 			utils.ErrorLogger(err, oauthTag)
