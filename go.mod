@@ -4,7 +4,6 @@ go 1.17
 
 require (
 	github.com/jedib0t/go-pretty/v6 v6.3.2
-	github.com/joho/godotenv v1.4.0
 	go.etcd.io/bbolt v1.3.6
 	golang.org/x/oauth2 v0.0.0-20220608161450-d0670ef3b1eb
 	google.golang.org/api v0.84.0

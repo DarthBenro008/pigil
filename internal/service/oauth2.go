@@ -7,7 +7,6 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"net/http"
-	"os"
 	"pigil/internal/types"
 	"pigil/internal/utils"
 )
@@ -17,8 +16,8 @@ const oauthTag = "oauth2"
 func OAuthGoogleConfig() *oauth2.Config {
 	return &oauth2.Config{
 		RedirectURL:  "http://localhost:6969",
-		ClientID:     os.Getenv("GOOGLE_OAUTH_CLIENT_ID"),
-		ClientSecret: os.Getenv("GOOGLE_OAUTH_CLIENT_SECRET"),
+		ClientID:     utils.GoogleClientId,
+		ClientSecret: utils.GoogleClientSecret,
 		Scopes: []string{"https://www.googleapis.com/auth/userinfo." +
 			"profile", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/gmail.compose"},
 		Endpoint: google.Endpoint,

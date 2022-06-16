@@ -3,3 +3,5 @@
 .env
 pigil
 todo.md
+dist/
+secrets.txt

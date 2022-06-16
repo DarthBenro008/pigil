@@ -1,9 +1,9 @@
 package main
 
 import (
+	_ "embed"
 	"errors"
 	"fmt"
-	"github.com/joho/godotenv"
 	bolt "go.etcd.io/bbolt"
 	"io"
 	"log"
@@ -12,16 +12,23 @@ import (
 	"pigil/internal/database"
 	"pigil/internal/types"
 	"pigil/internal/utils"
+	"strings"
 	"time"
 )
 
 const mainTag = "main"
+
+//go:embed secrets.txt
+var secrets string
 
 func main() {
 	dirname, err := os.UserHomeDir()
 	if err != nil {
 		utils.ErrorLogger(err, mainTag)
 	}
+	secretsArray := strings.Split(secrets, " ")
+	utils.GoogleClientId = secretsArray[0]
+	utils.GoogleClientSecret = secretsArray[1]
 	dirname = fmt.Sprintf("%s/%s", dirname, ".pigil")
 	if _, err := os.Stat(dirname); errors.Is(err, os.ErrNotExist) {
 		err := os.Mkdir(dirname, os.ModePerm)
@@ -35,10 +42,10 @@ func main() {
 		utils.ErrorLogger(err, mainTag)
 	}
 
-	err = godotenv.Load()
-	if err != nil {
-		utils.ErrorLogger(errors.New("cannot load .env file"), mainTag)
-	}
+	//err = godotenv.Load()
+	//if err != nil {
+	//	utils.ErrorLogger(errors.New("cannot load .env file"), mainTag)
+	//}
 	boltLocalDb := database.NewBoltDbService(db, utils.LocalBucket)
 	boltConfigDb := database.NewBoltDbService(db, utils.ConfigBucket)
 	dbService := database.NewDatabaseService(boltLocalDb, boltConfigDb)

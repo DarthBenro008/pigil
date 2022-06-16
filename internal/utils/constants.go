@@ -12,3 +12,8 @@ const (
 	UserRT       = "refresh_token"
 	DatabaseName = "pigil.database"
 )
+
+var (
+	GoogleClientId     = ""
+	GoogleClientSecret = ""
+)
