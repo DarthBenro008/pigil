@@ -9,9 +9,9 @@
 > A process vigilance system written in GoLang
 ## 🤔 What is Pigil?
 
-Pigil (Process vIGILance) is a self-hosted process watcher, that notifies when your process fails via an e-mail. Pigil is also capable to keep a history of all your commands for easier tracking. 
+Pigil (Process vIGILance) is a self-hosted process watcher, that notifies you as soon as your process fails via an e-mail. It also maintains a record of all your commands for easier tracking.
 
-Pigil is useful when you have huge builds and would like to be notified immedieatly via E-mail when the process fails
+Pigil keeps an eye on your processes when you have huge, time-taking builds and sends a notification via E-mail if the process fails to avoid any lapses in efficiency.
 
 
 ## 💻 Usage
@@ -34,7 +34,7 @@ Pigil currently has the following commands:
 ### Pigil Commands
 
 
-1. **`pigil <command>`**: will run the command an notify on failure
+1. **`pigil <command>`**: will run the command and notify on failure
 2. **`pigil bumf auth`**: will produce an authentication url
 3. **`pigil bumf db`**: shows you the history of commands with thier execution time
 4. **`pigil bumf status`**: shows current configurations
@@ -51,7 +51,7 @@ brew install pigil
 
 ### Using GoLang
 
-If you have golang installed you can install it via running:
+If you have golang installed you can install it by running:
 
 ```bash
 go install github.com/DarthBenro008/pigil@latest
@@ -86,4 +86,4 @@ Copyright 2022 Hemanth Krishna
 
 Licensed under MIT License : https://opensource.org/licenses/MIT
 
-<p align="center">Made with ❤ and a two cups of coffee</p>
+<p align="center">Made with ❤ , two cups of coffee and some chaii</p>
