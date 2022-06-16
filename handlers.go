@@ -97,8 +97,8 @@ func Notify(service database.Service, information types.CommandInformation) {
 		utils.ErrorLogger(err, handlerTag)
 	}
 	if email == "" {
-		utils.ErrorInformation("You are not authenticated! github.com/DarthBenro008/pigil cannot" +
-			" notify via email, please run `github.com/DarthBenro008/pigil bumf auth`")
+		utils.ErrorInformation("You are not authenticated! pigil cannot" +
+			" notify via email, please run `pigil bumf auth`")
 		return
 	}
 	at, err := service.GetConfig(utils.UserAT)
@@ -112,4 +112,9 @@ func Notify(service database.Service, information types.CommandInformation) {
 	cred := oauth2.Token{AccessToken: at, RefreshToken: rt}
 	client := service2.OAuthGoogleConfig().Client(context.Background(), &cred)
 	service2.SendEmail(client, email, information)
+}
+
+func Help() {
+	msg := utils.GenerateHelp(Version)
+	fmt.Println(msg)
 }

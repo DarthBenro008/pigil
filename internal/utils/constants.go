@@ -7,6 +7,7 @@ const (
 	CliAuth      = "auth"
 	CliStatus    = "status"
 	CliLogout    = "logout"
+	CliHelp      = "help"
 	UserEmail    = "email"
 	UserAT       = "access_token"
 	UserRT       = "refresh_token"

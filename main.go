@@ -18,6 +18,8 @@ import (
 
 const mainTag = "main"
 
+var Version = "development"
+
 //go:embed secrets.txt
 var secrets string
 
@@ -65,6 +67,8 @@ func cliHandler(args []string, service database.Service) {
 		Status(service)
 	case utils.CliLogout:
 		Logout(service)
+	case utils.CliHelp:
+		Help()
 	default:
 		utils.InformationLogger("Invalid pigil Command!")
 	}

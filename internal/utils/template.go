@@ -63,3 +63,27 @@ func GenerateEmailTemplate(information types.CommandInformation) (string, error)
 	}
 	return b.String(), nil
 }
+
+func GenerateHelp(version string) string {
+	help := fmt.Sprintf(`
+pigil %s
+An CLI that helps you track who unfollowed you, written purely in Rust
+
+       * Gun on those who unfollowed you!
+       * Has powerlevel10k integration and support
+
+Developed by Hemanth Krishna (https://github.com/DarthBenro008)
+
+USAGE:
+	pigil [ANY COMMAND TO RUN]
+	pigil bumf [SUBCOMMAND]
+
+SUBCOMMANDS:
+    help      Prints this message
+    auth      Authenticate yourself with Google and link it with Pigil
+    db        View history of commands
+    status    View the status of various pigil configurations
+    logout    Logout off Gmail and de-link pigil
+`, version)
+	return help
+}
