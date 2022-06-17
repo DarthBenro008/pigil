@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "go-npm install",
-    "undo-test" : "go-npm uninstall"
+    "undo-test" : "go-npm uninstall",
+    "postinstall": "go-npm install",
+    "preuninstall": "go-npm uninstall"
   },
   "repository": {
     "type": "git",
@@ -23,8 +25,6 @@
   "dependencies": {
     "@gzuidhof/go-npm": "^0.1.13"
   },
-  "postinstall": "go-npm install",
-  "preuninstall": "go-npm uninstall",
   "goBinary": {
     "name": "pigil",
     "path": "./bin",
