@@ -1,6 +1,6 @@
 {
   "name": "pigil",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Process vIGILance system that notifies you when your process fails via an e-mail, and is also capable of maintaining a record of all your commands for easier tracking.",
   "main": "index.js",
   "scripts": {
