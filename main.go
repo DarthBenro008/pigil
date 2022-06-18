@@ -48,6 +48,10 @@ func main() {
 	boltConfigDb := database.NewBoltDbService(db, utils.ConfigBucket)
 	dbService := database.NewDatabaseService(boltLocalDb, boltConfigDb)
 
+	if len(os.Args) == 1 {
+		Help()
+	}
+
 	if os.Args[1] == "bumf" {
 		cliHandler(os.Args, dbService)
 	} else {
