@@ -49,13 +49,27 @@ brew tap DarthBenro008/pigil
 brew install pigil
 ```
 
-### Using GoLang
-
-If you have golang installed you can install it by running:
+### Using NPM
 
 ```bash
-go install github.com/DarthBenro008/pigil@latest
+npm install -g pigil
 ```
+
+### Using Yarn
+
+```bash
+yarn global add pigil
+```
+
+### Building from source
+
+1. Create a GCP Project
+2. Get `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` by creating an Oauth Client from GCP Console
+3. Clone the project using the command `git clone https://github.com/DarthBenro008/pigil`
+4. Create a file named `secrets.txt` in the root of the project
+5. Paste your `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` seperated by space
+6. Run the command `go build`
+7. If you are on Linux/MacOS, make sure you move the binary to somewhere in your `$PATH` (e.g. `/usr/local/bin`).
 
 ### Manual Installation
 
