@@ -81,7 +81,7 @@ You can also download the binary and install it manually.
 
 ### Sample Email Notification
 
-![sample](assets/sample.png)
+![sample](assets/email.png)
 
 ### Sample Discord Notifiation
 
