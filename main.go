@@ -32,7 +32,7 @@ func main() {
 	secretsArray := strings.Split(secrets, " ")
 	utils.GoogleClientId = secretsArray[0]
 	utils.GoogleClientSecret = secretsArray[1]
-	dirname = fmt.Sprintf("%s/%s", dirname, "pigil")
+	dirname = fmt.Sprintf("%s/%s", dirname, ".pigil")
 	if _, err := os.Stat(dirname); errors.Is(err, os.ErrNotExist) {
 		err := os.Mkdir(dirname, os.ModePerm)
 		if err != nil {
@@ -48,6 +48,7 @@ func main() {
 	boltLocalDb := database.NewBoltDbService(db, utils.LocalBucket)
 	boltConfigDb := database.NewBoltDbService(db, utils.ConfigBucket)
 	dbService := database.NewDatabaseService(boltLocalDb, boltConfigDb)
+	IsFirstTime(dbService)
 
 	if len(os.Args) == 1 {
 		Help()
@@ -73,6 +74,16 @@ func cliHandler(args []string, service database.Service) {
 		Status(service)
 	case utils.CliLogout:
 		Logout(service)
+	case utils.CliDiscord:
+		if len(args) == 2 {
+			DiscordToggle(service, true)
+		} else if args[3] == "disable" {
+			DiscordToggle(service, true)
+		} else {
+			utils.InformationLogger(
+				"To disable discord webhook run `pigil bumf discord disable`")
+		}
+
 	case utils.CliHelp:
 		Help()
 	default:
