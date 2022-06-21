@@ -240,6 +240,7 @@ func IsFirstTime(service database.Service) {
 		utils.ErrorLogger(err, handlerTag)
 	}
 	if value == "" {
+		fmt.Println("Welcome to Pigil! Please set the notification channels")
 		NotificationSelector(service)
 		err = service.InsertConfig(types.ConfigurationInformation{
 			Key:   utils.DbFirstTime,
