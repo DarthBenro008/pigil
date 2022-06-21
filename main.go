@@ -4,16 +4,17 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
-	"github.com/DarthBenro008/pigil/internal/database"
-	"github.com/DarthBenro008/pigil/internal/types"
-	"github.com/DarthBenro008/pigil/internal/utils"
-	bolt "go.etcd.io/bbolt"
 	"io"
 	"log"
 	"os"
 	"os/exec"
 	"strings"
 	"time"
+
+	"github.com/DarthBenro008/pigil/internal/database"
+	"github.com/DarthBenro008/pigil/internal/types"
+	"github.com/DarthBenro008/pigil/internal/utils"
+	bolt "go.etcd.io/bbolt"
 )
 
 const mainTag = "main"
@@ -50,6 +51,7 @@ func main() {
 
 	if len(os.Args) == 1 {
 		Help()
+		os.Exit(0)
 	}
 
 	if os.Args[1] == "bumf" {

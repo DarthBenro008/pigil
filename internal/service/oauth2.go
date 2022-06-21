@@ -4,11 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
+
 	"github.com/DarthBenro008/pigil/internal/types"
 	"github.com/DarthBenro008/pigil/internal/utils"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
-	"net/http"
 )
 
 const oauthTag = "oauth2"
