@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/AlecAivazis/survey/v2"
+	"github.com/AlecAivazis/survey/v2/core"
 	"github.com/DarthBenro008/pigil/internal/database"
 	service2 "github.com/DarthBenro008/pigil/internal/service"
 	"github.com/DarthBenro008/pigil/internal/types"
@@ -94,51 +96,107 @@ func Logout(service database.Service) {
 }
 
 func Notify(service database.Service, information types.CommandInformation) {
+	for _, channel := range utils.Channels {
+		value, err := service.GetConfig(channel)
+		if err != nil {
+			utils.ErrorLogger(err, handlerTag)
+		}
+		if value == utils.DbTrue {
+			switch channel {
+			case utils.Email:
+				err = emailNotifier(service, information)
+				if err != nil {
+					utils.ErrorLogger(err, handlerTag)
+				}
+			case utils.Discord:
+				err = discordNotifier(service, information)
+				if err != nil {
+					utils.ErrorLogger(err, handlerTag)
+				}
+			}
+		}
+	}
+}
+
+func emailNotifier(service database.Service, information types.CommandInformation) error {
 	email, err := service.GetConfig(utils.UserEmail)
 	if err != nil {
-		utils.ErrorLogger(err, handlerTag)
+		return err
 	}
 	if email == "" {
 		utils.ErrorInformation("You are not authenticated! pigil cannot" +
 			" notify via email, please run `pigil bumf auth`")
-		return
+		return nil
 	}
 	at, err := service.GetConfig(utils.UserAT)
 	if err != nil {
-		utils.ErrorLogger(err, handlerTag)
+		return err
 	}
 	rt, err := service.GetConfig(utils.UserRT)
 	if err != nil {
-		utils.ErrorLogger(err, handlerTag)
+		return err
 	}
 	cred := oauth2.Token{AccessToken: at, RefreshToken: rt,
 		Expiry: time.Now().Add(5)}
-	fmt.Println(cred)
 	client := service2.OAuthGoogleConfig().Client(context.Background(), &cred)
 	service2.SendEmail(client, email, information)
+	return nil
+}
 
-	value, err := service.GetConfig(utils.DbDiscordEnabled)
+func discordNotifier(service database.Service, information types.CommandInformation) error {
+	url, err := service.GetConfig(utils.DbDiscordUrl)
+	msg := utils.GenerateDiscordMessage(information)
+	err, status, resp := service2.SendPostRequest(url, msg)
+	if status != 204 {
+		return errors.New(resp)
+	}
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func NotificationSelector(service database.Service) {
+	var selectedChannels []string
+	prompt := &survey.MultiSelect{
+		Message: "Select Channel of Notification",
+		Options: utils.Channels,
+		Default: utils.Email,
+	}
+	err := survey.AskOne(prompt, &selectedChannels, survey.WithValidator(func(ans interface{}) error {
+		if len(ans.([]core.OptionAnswer)) == 0 {
+			return errors.New("please select one of the following")
+		}
+		return nil
+	}))
 	if err != nil {
 		utils.ErrorLogger(err, handlerTag)
 	}
-	if value == utils.DbTrue {
-		url, err := service.GetConfig(utils.DbDiscordUrl)
-		msg := utils.GenerateDiscordMessage(information)
-		err, status, resp := service2.SendPostRequest(url, msg)
-		if status != 204 {
-			utils.ErrorLogger(errors.New(resp), handlerTag)
-		}
-		if err != nil {
-			utils.ErrorLogger(err, handlerTag)
+	for _, channel := range utils.Channels {
+		if utils.Contains(selectedChannels, channel) {
+			err := service.InsertConfig(types.ConfigurationInformation{
+				Key:   channel,
+				Value: utils.DbTrue,
+			})
+			if err != nil {
+				utils.ErrorLogger(err, handlerTag)
+			}
+		} else {
+			err := service.InsertConfig(types.ConfigurationInformation{
+				Key:   channel,
+				Value: utils.DbFalse,
+			})
+			if err != nil {
+				utils.ErrorLogger(err, handlerTag)
+			}
 		}
 	}
-
 }
 
 func DiscordToggle(service database.Service, toggle bool) {
 	if !toggle {
 		err := service.InsertConfig(types.ConfigurationInformation{
-			Key:   utils.DbDiscordEnabled,
+			Key:   utils.Discord,
 			Value: utils.DbTrue,
 		})
 		if err != nil {
@@ -147,9 +205,11 @@ func DiscordToggle(service database.Service, toggle bool) {
 		utils.InformationLogger("Discord Webhook has been disabled!")
 		return
 	}
-	fmt.Println("Please enter discord webhook url: ")
-	var input string
-	_, err := fmt.Scanln(&input)
+	input := ""
+	prompt := &survey.Input{
+		Message: "Please enter discord webhook url: ",
+	}
+	err := survey.AskOne(prompt, &input, survey.WithValidator(survey.Required))
 	if err != nil {
 		utils.ErrorLogger(err, handlerTag)
 	}
@@ -161,7 +221,7 @@ func DiscordToggle(service database.Service, toggle bool) {
 		utils.ErrorLogger(err, handlerTag)
 	}
 	err = service.InsertConfig(types.ConfigurationInformation{
-		Key:   utils.DbDiscordEnabled,
+		Key:   utils.Discord,
 		Value: utils.DbTrue,
 	})
 	if err != nil {
@@ -180,16 +240,10 @@ func IsFirstTime(service database.Service) {
 		utils.ErrorLogger(err, handlerTag)
 	}
 	if value == "" {
+		NotificationSelector(service)
 		err = service.InsertConfig(types.ConfigurationInformation{
 			Key:   utils.DbFirstTime,
 			Value: time.Now().String(),
-		})
-		if err != nil {
-			utils.ErrorLogger(err, handlerTag)
-		}
-		err = service.InsertConfig(types.ConfigurationInformation{
-			Key:   utils.DbDiscordEnabled,
-			Value: utils.DbFalse,
 		})
 		if err != nil {
 			utils.ErrorLogger(err, handlerTag)

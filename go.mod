@@ -3,6 +3,7 @@ module github.com/DarthBenro008/pigil
 go 1.17
 
 require (
+	github.com/AlecAivazis/survey/v2 v2.3.5
 	github.com/jedib0t/go-pretty/v6 v6.3.2
 	go.etcd.io/bbolt v1.3.6
 	golang.org/x/oauth2 v0.0.0-20220608161450-d0670ef3b1eb
@@ -15,11 +16,16 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.1.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.4.0 // indirect
+	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
+	github.com/mattn/go-colorable v0.1.2 // indirect
+	github.com/mattn/go-isatty v0.0.8 // indirect
 	github.com/mattn/go-runewidth v0.0.13 // indirect
+	github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	golang.org/x/net v0.0.0-20220607020251-c690dde0001d // indirect
 	golang.org/x/sys v0.0.0-20220614162138-6c1b26c55098 // indirect
+	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20220614165028-45ed7f3ff16e // indirect

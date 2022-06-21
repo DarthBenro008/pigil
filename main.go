@@ -49,7 +49,6 @@ func main() {
 	boltConfigDb := database.NewBoltDbService(db, utils.ConfigBucket)
 	dbService := database.NewDatabaseService(boltLocalDb, boltConfigDb)
 	IsFirstTime(dbService)
-
 	if len(os.Args) == 1 {
 		Help()
 		os.Exit(0)
@@ -60,8 +59,11 @@ func main() {
 	} else {
 		executor(os.Args, dbService)
 	}
-	defer db.Close()
-
+	defer func(db *bolt.DB) {
+		err := db.Close()
+		if err != nil {
+		}
+	}(db)
 }
 
 func cliHandler(args []string, service database.Service) {
@@ -75,7 +77,7 @@ func cliHandler(args []string, service database.Service) {
 	case utils.CliLogout:
 		Logout(service)
 	case utils.CliDiscord:
-		if len(args) == 2 {
+		if len(args) == 3 {
 			DiscordToggle(service, true)
 		} else if args[3] == "disable" {
 			DiscordToggle(service, true)
@@ -83,9 +85,10 @@ func cliHandler(args []string, service database.Service) {
 			utils.InformationLogger(
 				"To disable discord webhook run `pigil bumf discord disable`")
 		}
-
 	case utils.CliHelp:
 		Help()
+	case utils.CliChannels:
+		NotificationSelector(service)
 	default:
 		utils.InformationLogger("Invalid pigil Command!")
 	}
